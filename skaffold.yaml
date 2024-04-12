@@ -1,0 +1,41 @@
+# skaffold
+# Заходим в корень проект где файл skaffold.yaml и запускаем команду skaffold dev
+# еСЛИ БУДУТ ошибки типа failed - запускаем 2 раза
+# docker образы из yaml файлов не обязательно грузить в docker hub для skaffold
+# minikube start
+# skaffold dev
+# Теперь skaffold отслеживает изменения в файлах проекта директория - manual:
+# Если после изменений файлов проекта изменения не видны в консоли - это нормально
+
+# If you did not see your server restart after changing the index.ts file, do the following:
+# Open the package.json file in the ‘auth’ directory
+# Find the ‘start’ script
+# Update the start script to the following:
+# ts-node-dev --poll src/index.ts
+
+# Если yaml файлы для K8S были изменены или перезапущены, то команду skaffold dev нужно запускать заново
+
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      # Указываем тут файлы K8S
+      # Skaffold будет автоматически применять изменения в этих файлах
+      - ./infra/k8s/*
+build:
+  local:
+    # Говорим что docker push делать не нужно
+    push: false
+  artifacts:
+    # Указываем имя образа в Docker hub
+    - image: jgslahrb/blog-auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Указываем какие файлы нужно мониторить и отправлять в Docker hub автоматически
+          - src: 'src/**/*.ts'
+            # В этой директории при изменении файлов нужно перезапускать установку пакетов
+            dest: .

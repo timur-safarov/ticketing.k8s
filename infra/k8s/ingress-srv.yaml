@@ -1,0 +1,57 @@
+# NGINX Ingress
+# https://kubernetes.github.io/ingress-nginx/user-guide/ingress-path-matching/
+
+# ingress-nginx — это контроллер Ingress для Kubernetes, 
+# использующий NGINX в качестве обратного прокси-сервера и балансировщика нагрузки.
+# https://github.com/kubernetes/ingress-nginx
+
+# Настройка yaml файлов
+# https://docs.nginx.com/nginx-ingress-controller/configuration/ingress-resources/basic-configuration/
+
+# Установка
+# https://kubernetes.github.io/ingress-nginx/deploy/
+
+# В прошлый раз ставил так
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml
+
+# И потом эта команда
+# minikube addons enable ingress
+# https://kubernetes.github.io/ingress-nginx/user-guide/ingress-path-matching/
+# Весрсия kubectl 1.21 и меньше apiVersion: extensions/v1beta1, apiVersion: networking.k8s.io/v1beta1
+# Весрсия kubectl 1.22 и больше apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    # Указываем что можно использовать рег выражения в path
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    # Весрсия kubectl 1.21 и меньше 
+    # kubernetes.io/ingress.class: nginx
+    # Указываем ssl сертификат
+    # cert-manager.io/issuer: "letsencrypt-staging"
+spec:
+  ingressClassName: nginx
+  # Можно указать tls если нужен https
+  # tls:
+  #   - hosts:
+  #     - ticketing.k8s
+  #     secretName: ticketing-k8s
+  rules:
+    - host: ticketing.k8s
+      http:
+        paths:
+            # path это конкретный URL путь в браузере
+          - path: /api/users/?(.*)
+            pathType: Prefix
+            backend: 
+              # Сервис к которому мы подключаемся и его порт
+              # Весрсия kubectl 1.21 и меньше serviceName: posts-clusterip-srv
+              # Весрсия kubectl 1.21 и меньше servicePort: 4000
+              # Весрсия kubectl 1.22 и больше
+              # Тут мы указываем к какому сервисе и на каком порут будет обращаться
+              # страничка /posts/create
+              service:
+                name: auth-srv
+                port:
+                  number: 3000
