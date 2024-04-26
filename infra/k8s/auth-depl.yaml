@@ -16,6 +16,18 @@ spec:
         # Это название важно только для процесса логирования
         - name: auth 
           image: jgslahrb/blog-auth
+          # Тут нужно чтобы была выполнена команда для создания ключа заранее
+          # Вот эта: kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
+          # Иначе kubectl не будет нахдить ключ с именем - jwt-secret
+          env: 
+            - name: JWT_KEY
+              valueFrom: 
+                secretKeyRef:
+                  # Если мыменяе имя то нужно создать секретный ключ с таким же именем
+                  # kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
+                  name: jwt-secret
+                  key: JWT_KEY
+
 ---
 apiVersion: v1
 kind: Service

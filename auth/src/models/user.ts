@@ -37,6 +37,17 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	}
+}, {
+	// toJSON меняет и удаляет значения в текущем объекте
+	toJSON: {
+		transform(doc, ret) {
+			// Тут мы просто менаем ret._id на ret.id чтобы выглядело презентабельней
+			ret.id = ret._id;
+			delete ret._id;
+			delete ret.password;
+			delete ret.__v;
+		}
+	}
 });
 
 userSchema.pre('save', async function(done) {
