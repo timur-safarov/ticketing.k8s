@@ -18,15 +18,26 @@ beforeAll(async() => {
 	// const mongoUri = await mongo.getUri();
 
 	// it is now
+	// Этот пакет программно запускает реальный/настоящий сервер MongoDB 
+	// из nodejs для тестирования или макетирования во время разработки.
+	// По умолчанию он хранит данные в памяти. Свежий запущенный процесс mongod занимает около 7 МБ памяти. 
+	// Сервер позволит вам подключить вашу любимую ODM или клиентскую библиотеку к серверу MongoDB 
+	// и запускать изолированные друг от друга интеграционные тесты.
 	mongo = await MongoMemoryServer.create();
+
+	// mongodb://127.0.0.1:21930/
 	const mongoUri = mongo.getUri();
 
 	// mongoose.connect('<строка-соединения>', <опции>, <обратный вызов>);
 	// Функция обратного вызова записывает на консоль сообщение, указывающее, было ли соединение успешным или нет.
-	await mongoose.connect(mongoUri, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true
-	} as ConnectOptions);
+	// await mongoose.connect(mongoUri, {
+	// 	useNewUrlParser: true,
+	// 	useUnifiedTopology: true
+	// } as ConnectOptions);
+
+	// mongoose 8^ connect
+	await mongoose.connect(mongoUri, {});
+
 
 });
 
