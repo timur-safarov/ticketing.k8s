@@ -16,10 +16,13 @@ const app = express();
 
 app.set('trust proxy', true);
 app.use(json());
+
+// secure: true означает что мы используем https
 app.use(
 	cookieSession({
 		signed: false,
-		secure: true
+		secure: process.env.NODE_ENV !== 'test'
+		//secure: true
 	})
 );
 

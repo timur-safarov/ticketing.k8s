@@ -1,9 +1,28 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { ConnectOptions, connect } from "mongoose";
+import request from 'supertest';
 
 // Импортируем запуск приложения из файла app
 import { app } from "../app";
+
+// https://stackoverflow.com/questions/73780201/i-cant-understand-how-do-globals-work-in-typescript-nodejs-and-what-is-their
+
+// Включаем global перепенные для TYPESCRIPT
+// declare global as typeof globalThis
+
+// declare global {
+// 	namespace NodeJS {
+// 		interface Global {
+// 			signin(): Promise<string[]>;
+// 		}
+// 	}
+// }
+
+declare global {
+  function signin(): Promise<string>;
+}
+
 
 let mongo: any;
 
@@ -60,3 +79,27 @@ afterAll(async () => {
 	await mongoose.connection.close();
 
 });
+
+
+global.signin = async () => {
+
+	const email = 'test@test.com';
+	const password = 'password';
+
+	const responce = await request(app)
+		.post('/api/users/signup')
+		.send({
+			email,
+			password
+		})
+		.expect(201);
+
+	const cookie = responce.headers['set-cookie'];
+
+	// const cookie = responce.get('Set-Cookie');
+
+	// console.log(cookie);
+
+	return cookie;
+
+};

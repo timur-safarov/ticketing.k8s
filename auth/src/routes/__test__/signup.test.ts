@@ -83,3 +83,19 @@ it('disallows dublicate emails', async () => {
 		.expect(400);
 
 });
+
+
+it('set a cookie after successful signup', async () => {
+
+	const responce = await request(app)
+		.post('/api/users/signup')
+		.send({
+			email: 'test@test.com',
+			password: 'password'
+		})
+		.expect(201);
+
+	expect(responce.get('Set-Cookie')).toBeDefined();
+
+
+});
