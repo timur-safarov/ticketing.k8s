@@ -15,7 +15,7 @@ spec:
       containers:
         # Это название важно только для процесса логирования
         - name: auth 
-          image: jgslahrb/blog-auth
+          image: jgslahrb/auth
           # Тут нужно чтобы была выполнена команда для создания ключа заранее
           # Вот эта: kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
           # Иначе kubectl не будет нахдить ключ с именем - jwt-secret

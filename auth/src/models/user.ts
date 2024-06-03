@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
 	toJSON: {
 		transform(doc, ret) {
 			// Тут мы просто менаем ret._id на ret.id чтобы выглядело презентабельней
+			// А также удаляем password чтобы его не было вывести, только передать
 			ret.id = ret._id;
 			delete ret._id;
 			delete ret.password;

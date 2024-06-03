@@ -43,6 +43,11 @@ spec:
         paths:
             # path это конкретный URL путь в браузере
           - path: /api/users/?(.*)
+            # exact - Точно соответствует URL-пути с учетом регистра.
+            # Prefix - для url раздённых символом /
+            # Mixed - 
+            # ImplementationSpecific - При использовании этого типа пути сопоставление зависит от IngressClass. 
+            # Реализации могут рассматривать это как отдельный pathType или обрабатывать его идентично типам пути Prefix или Exact.
             pathType: Prefix
             backend: 
               # Сервис к которому мы подключаемся и его порт
@@ -53,5 +58,24 @@ spec:
               # страничка /posts/create
               service:
                 name: auth-srv
+                port:
+                  number: 3000
+            # path это обобщённый(не такой конкретный как выше) URL путь в браузере
+          - path: /?(.*)
+            # exact - Точно соответствует URL-пути с учетом регистра.
+            # Prefix - для url раздённых символом /
+            # Mixed - 
+            # ImplementationSpecific - При использовании этого типа пути сопоставление зависит от IngressClass. 
+            # Реализации могут рассматривать это как отдельный pathType или обрабатывать его идентично типам пути Prefix или Exact.
+            pathType: Prefix
+            backend: 
+              # Сервис к которому мы подключаемся и его порт
+              # Весрсия kubectl 1.21 и меньше serviceName: posts-clusterip-srv
+              # Весрсия kubectl 1.21 и меньше servicePort: 4000
+              # Весрсия kubectl 1.22 и больше
+              # Тут мы указываем к какому сервисе и на каком порут будет обращаться
+              # страничка /posts/create
+              service:
+                name: client-srv
                 port:
                   number: 3000

@@ -29,7 +29,7 @@ build:
     push: false
   artifacts:
     # Указываем имя образа в Docker hub
-    - image: jgslahrb/blog-auth
+    - image: jgslahrb/auth
       context: auth
       docker:
         dockerfile: Dockerfile
@@ -37,5 +37,16 @@ build:
         manual:
           # Указываем какие файлы нужно мониторить и отправлять в Docker hub автоматически
           - src: 'src/**/*.ts'
+            # В этой директории при изменении файлов нужно перезапускать установку пакетов
+            dest: .
+    # Указываем имя образа в Docker hub
+    - image: jgslahrb/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          # Указываем какие файлы нужно мониторить и отправлять в Docker hub автоматически
+          - src: '**/*.js'
             # В этой директории при изменении файлов нужно перезапускать установку пакетов
             dest: .
