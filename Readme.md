@@ -23,6 +23,16 @@ minikube ip
 И указать его для нашего домена в файле /etc/hosts
 192.168.49.2    ticketing.k8s
 
+
+Также должен работать ingress-nginx сервис
+Проверить есть ли он можно так
+kubectl get services -n ingress-nginx
+Примечание: у Minikube будет тип NodePort, т.к. Minikube не поддерживает сервис LoadBalancer
+
+
+В курсе указан домен ticketing.dev, а мы прописали как ticketing.k8s
+
+
 Перейти в папку где лежит файл skaffold.yaml и запустить команду
 это нужно делать в том же окне терминала где был запущен minikube
 skaffold dev
@@ -179,6 +189,10 @@ Headers->Responce
 Страницы сайта
 https://ticketing.k8s/auth/signup
 
+
+Также куки для домена можно посмотреть в консоли так
+Удалить их или изменить также можно
+Application->Cookies->domain-name
 
 
 /**===============================================================================================================**/
