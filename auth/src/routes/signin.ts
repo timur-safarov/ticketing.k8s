@@ -2,10 +2,10 @@ import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
+import { validateRequest, BadRequestError } from '@npm-tisafarov/common';
+
 import { Password } from '../services/password';
 import { User } from '../models/user';
-import { validateRequest } from '../middlewares/validate-request';
-import { BadRequestError } from '../errors/bad-request-error';
 
 // Так как у нас есть validateRequest то RequestValidationError нам больше не нужен
 // import { RequestValidationError } from '../errors/request-validation-error';

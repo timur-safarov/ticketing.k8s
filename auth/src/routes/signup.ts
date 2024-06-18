@@ -3,13 +3,12 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
-import { validateRequest } from '../middlewares/validate-request';
+import { validateRequest, BadRequestError } from '@npm-tisafarov/common';
+
 import { User } from '../models/user';
 
 // Так как у нас есть validateRequest то RequestValidationError нам больше не нужен
 // import { RequestValidationError } from '../errors/request-validation-error';
-
-import { BadRequestError } from '../errors/bad-request-error';
 
 const router = express.Router();
 
