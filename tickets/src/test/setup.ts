@@ -5,6 +5,7 @@ import request from 'supertest';
 
 // Импортируем запуск приложения из файла app
 import { app } from "../app";
+import jwt from 'jsonwebtoken';
 
 // https://stackoverflow.com/questions/73780201/i-cant-understand-how-do-globals-work-in-typescript-nodejs-and-what-is-their
 
@@ -19,8 +20,20 @@ import { app } from "../app";
 // 	}
 // }
 
+// declare global {
+//   function signin(): Promise<string>;
+// }
+
+// declare global {
+// 	function signin(): string[];
+// }
+
+
 declare global {
-  function signin(): Promise<string>;
+	// Тут мы указываем что должун вернуться массив в котором будет строка
+	// [`session=${base64}`]
+	// если бы функция была бы асинхронная то нужно писать так Promise<string[]>;
+	function signin(): string[];
 }
 
 
@@ -31,6 +44,7 @@ beforeAll(async() => {
 
 	// Временно создадим тут переменную ENV
 	process.env.JWT_KEY = 'SDFAGFDHGFDHGF';
+	// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 	// this no longer works
 	// mongo = new MongoMemoryServer();
@@ -80,27 +94,38 @@ afterAll(async () => {
 
 });
 
+// Это нужно для тестов - тестовая авторизация
+global.signin = () => {
 
-global.signin = async () => {
+	// Build JWT payload. { id, email }
+	const payload = {
+		id: 'wetwtree0ew',
+		email: 'test@test.com',
+	};
 
-	const email = 'test@test.com';
-	const password = 'password';
+	// Create the JWT!
+	const token = jwt.sign(payload, process.env.JWT_KEY!);
 
-	const responce = await request(app)
-		.post('/api/users/signup')
-		.send({
-			email,
-			password
-		})
-		.expect(201);
+	// Build session object. { jwt: my_jwt }
+	const session = { jwt: token };
 
-	const cookie = responce.headers['set-cookie'];
+	// Turn that session into JSON
+	const sessionJSON = JSON.stringify(session);
 
-	// const cookie = responce.get('Set-Cookie');
+	// Take JSON and encode it as base64
+	// The Buffer. from() method creates a new buffer filled with the specified string, array, or buffer
+	const base64 = Buffer.from(sessionJSON).toString('base64');
 
-	// Мы увидем вывод в терминале после cd auth && npm run test
-	// console.log(cookie);
+	// Мы увидем вывод в терминале после cd tickets && npm run test
+	// console.log(`express:sess=${base64}`);
 
-	return cookie;
+	// return a string thats a coockie with the encoded data 
+	// Тут должна начится строка так же как в браузере после авторизации
+	// Чтобы увидеть передаваемые куки в консоли браузера идём сюда
+	// network->Fetch/XHR->Headers
+
+	// так было в уроке return [`express:sess=${base64}`];
+	// а так у меня
+	return [`session=${base64}`];
 
 };

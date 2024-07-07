@@ -10,7 +10,7 @@ const start = async () => {
 	}
 
 	if (!process.env.MONGO_URI) {
-		throw new Error('Mongo Uri must be defined - auth');
+		throw new Error('Mongo Uri must be defined - tickets');
 	}
 
 	try {

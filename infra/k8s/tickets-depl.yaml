@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-depl
+  name: tickets-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth
+      app: tickets
   template:
     metadata:
       labels:
-        app: auth
+        app: tickets
     spec: 
       containers:
         # Это название важно только для процесса логирования
-        - name: auth 
-          image: jgslahrb/auth
+        - name: tickets 
+          image: jgslahrb/tickets
           # Тут нужно чтобы была выполнена команда для создания ключа заранее
           # Вот эта: kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
           # Иначе kubectl не будет нахдить ключ с именем - jwt-secret
           env: 
             - name: MONGO_URI
-              value: 'mongodb://auth-mongo-srv:27017/auth'
+              value: 'mongodb://tickets-mongo-srv:27017/tickets'
             - name: JWT_KEY
               valueFrom: 
                 secretKeyRef:
@@ -34,12 +34,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-srv
+  name: tickets-srv
 spec: 
   selector: 
-    app: auth
+    app: tickets
   ports:
-    - name: auth
+    - name: tickets
       protocol: TCP
       port: 3000
       targetPort: 3000

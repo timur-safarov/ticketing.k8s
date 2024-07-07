@@ -23,7 +23,6 @@ minikube ip
 И указать его для нашего домена в файле /etc/hosts
 192.168.49.2    ticketing.k8s
 
-
 Также должен работать ingress-nginx сервис
 Проверить есть ли он можно так
 kubectl get services -n ingress-nginx
@@ -163,12 +162,12 @@ skaffold run
 /**===============================================================================================================**/
 
 Запуск тестов
-
 Само приложение должно работать тоже
+Сами тесты у нас написаны в папкках __test__
 
 cd auth/
+cd tickets/
 npm run test
-
 
 /**===============================================================================================================**/
 
@@ -200,3 +199,10 @@ Application->Cookies->domain-name
 Мои Пакеты тут
 https://www.npmjs.com/~tisafarov
 import { BadRequestError } from "@npm-tisafarov/common/errors/bad-request-error";
+
+/**===============================================================================================================**/
+
+Куки в браузере храняться в base64 - чтобы увидеть куки в виде json раскодируйте их
+https://www.base64decode.org/
+Будет примерно такая строка
+{"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODBhYzkzN2FiMjc4YjllOTliZDFmMyIsImVtYWlsIjoidGVzdEBlbWFpbC5jb20iLCJpYXQiOjE3MTk3MDg4MTl9.W1fwhoMauXCRjTd31grB-QVSTto8E5O6-7BPLBZl_NY"}
