@@ -99,7 +99,7 @@ global.signin = () => {
 
 	// Build JWT payload. { id, email }
 	const payload = {
-		id: 'wetwtree0ew',
+		id: new mongoose.Types.ObjectId().toHexString(),
 		email: 'test@test.com',
 	};
 

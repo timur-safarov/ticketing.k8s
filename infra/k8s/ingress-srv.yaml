@@ -60,6 +60,15 @@ spec:
                 name: auth-srv
                 port:
                   number: 3000
+
+          - path: /api/tickets/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: tickets-srv
+                port:
+                  number: 3000
+
             # path это обобщённый(не такой конкретный как выше) URL путь в браузере
           - path: /?(.*)
             # exact - Точно соответствует URL-пути с учетом регистра.

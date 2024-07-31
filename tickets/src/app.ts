@@ -4,6 +4,9 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { errorHandler, NotFoundError, currentUser } from '@npm-tisafarov/common';
 import { createTicketsRouter } from './routes/new';
+import { showTicketRouter } from './routes/show';
+import { indexTicketRouter } from './routes/index';
+import { updateTicketRouter } from './routes/update';
 
 const app = express();
 
@@ -20,8 +23,10 @@ app.use(
 );
 
 app.use(currentUser);
-
 app.use(createTicketsRouter);
+app.use(showTicketRouter);
+app.use(indexTicketRouter);
+app.use(updateTicketRouter);
 
 /**
  * Эту ошибку нужно выводить до app.use(errorHandler);

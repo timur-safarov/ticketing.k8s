@@ -120,6 +120,85 @@ https://ticketing.k8s/api/users/signout
 
 /**===============================================================================================================**/
 
+Создать тикет
+
+Авторизоваться
+https://ticketing.k8s/api/users/signup
+
+Войти под тем же пользователем
+https://ticketing.k8s/api/users/signin
+
+Создать тикет
+https://ticketing.k8s/api/tickets
+Указываем метод POST
+Во вкладке Headers->Key пишем Content-Type
+Во вкладке Header->value пишем application/json
+Во вкладке body
+{
+    "title": "concert",
+    "price": 234
+}
+Устанавливаем JSON
+Переходим в raw и жмём отправить
+
+Должен вернуться объект
+{
+    "title": "concert",
+    "price": 234,
+    "userId": "66aabc63d7ced0b403dfd9b1",
+    "__v": 0,
+    "id": "66aabcd40c492456a847b364"
+}
+
+
+/**===============================================================================================================**/
+
+Получиь существующий тикет
+66aabcd40c492456a847b364 - это ID тикета
+https://ticketing.k8s/api/tickets/66aabcd40c492456a847b364
+
+Указываем метод GET
+Во вкладке Headers->Key пишем Content-Type
+Во вкладке Header->value пишем application/json
+
+Устанавливаем JSON
+Переходим в raw и жмём отправить
+
+Должен вернуться объект
+{
+    "title": "concert",
+    "price": 234,
+    "userId": "66aabc63d7ced0b403dfd9b1",
+    "__v": 0,
+    "id": "66aabcd40c492456a847b364"
+}
+
+
+/**===============================================================================================================**/
+
+Получить все тикеты
+
+https://ticketing.k8s/api/tickets/
+Указываем метод GET
+Во вкладке Headers->Key пишем Content-Type
+Во вкладке Header->value пишем application/json
+
+Устанавливаем JSON
+Переходим в raw и жмём отправить
+
+Должен вернуться массив объектов
+[
+    {
+        "title": "concert",
+        "price": 234,
+        "userId": "66aabc63d7ced0b403dfd9b1",
+        "__v": 0,
+        "id": "66aabcd40c492456a847b364"
+    }
+]
+
+/**===============================================================================================================**/
+
 Чтобы создать токен использую эти ресурсы
 https://www.base64decode.org/
 https://jwt.io/
@@ -200,9 +279,35 @@ Application->Cookies->domain-name
 https://www.npmjs.com/~tisafarov
 import { BadRequestError } from "@npm-tisafarov/common/errors/bad-request-error";
 
+Чтобы обновить пакеты переходим сюда
+cd common
+npm run pub
+
+Потом идём туда где у нас используется эта зависимость и обновляем пакеты
+cd tickets
+npm update @npm-tisafarov/common
+
 /**===============================================================================================================**/
 
 Куки в браузере храняться в base64 - чтобы увидеть куки в виде json раскодируйте их
 https://www.base64decode.org/
 Будет примерно такая строка
 {"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODBhYzkzN2FiMjc4YjllOTliZDFmMyIsImVtYWlsIjoidGVzdEBlbWFpbC5jb20iLCJpYXQiOjE3MTk3MDg4MTl9.W1fwhoMauXCRjTd31grB-QVSTto8E5O6-7BPLBZl_NY"}
+
+/**===============================================================================================================**/
+
+Url адреса и роуты, котрые будут доступны прописываются тут
+infra/k8s/ingress-srv.yaml
+
+/**===============================================================================================================**/
+
+NATS документация
+https://docs.nats.io/
+
+Docker образы, которые мы используем
+Nats
+Nats-streaming
+
+
+
+/**===============================================================================================================**/
