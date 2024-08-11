@@ -32,6 +32,15 @@ kubectl get services -n ingress-nginx
 В курсе указан домен ticketing.dev, а мы прописали как ticketing.k8s
 
 
+Должен быть создан secret с именем jwt-secret
+Проверить какие есть уже - если есть наш jwt-secret то создавать не нужно, или удалить и создать
+kubectl get secrets
+В уроке создаётся такой jwt-secret
+kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
+
+Об это рассказано в уроке Глава 9. Authentication Strategies and Options -> 13. Creating and Accessing Secrets
+
+
 Перейти в папку где лежит файл skaffold.yaml и запустить команду
 это нужно делать в том же окне терминала где был запущен minikube
 skaffold dev
@@ -208,9 +217,17 @@ https://jwt.io/
 Token для K8S
 Создаём секретный доступ через jsonwebtoken
 kubectl create secret generic jwt-secret --from-literal=jwt=asdf
+
+В уроке создаётся такой jwt-secret
 kubectl create secret generic jwt-secret --from-literal=JWT_KEY=asdf
 
 Об это рассказано в уроке Глава 9. Authentication Strategies and Options -> 13. Creating and Accessing Secrets
+
+Просмотреть все secrets
+kubectl get secrets
+
+Удалить существующий secret
+kubectl delete secret jwt-secret
 
 /**===============================================================================================================**/
 
@@ -304,21 +321,30 @@ infra/k8s/ingress-srv.yaml
 NATS документация
 https://docs.nats.io/
 
-Так как nats неиспользует JS мы встраиваем его с помощью пакета с npmjs.com
+Так как nats не использует JS мы встраиваем его с помощью пакета с npmjs.com
 https://www.npmjs.com/package/node-nats-streaming
 
 Docker образы, которые мы используем
 nats
 nats-streaming
 
+Глава 14 - урок 7. Port-Forwarding with Kubectl
+
 Чтобы соединиться с nats в нашем K8S 
 1). Нужно убедиться что под есть
 kubectl get pods - ищем имя пода для nats
 2). Нужно прокинуть порт к клиенту nats
 4222 - это порт который мы указываем в настройках сервиса для клиента nats
-kubectl port-forward nats-depl-57bcc6f4bc-wj7tc 4222:4222
+kubectl port-forward nats-depl-79486c67b9-69b4q 4222:4222
+
+Список портов port-forward если нужно
+ps -ef|grep port-forward
+
+Удалить port-forward если нужно
+kill -9 1645387
+
 3). cd nats-test/
-Потом не закрывая работу порта - открываем новую вкладку консоли и вводим
+Потом НЕ ЗАКРЫВАЯ работу порта - открываем НОВУЮ вкладку консоли и вводим
 npm run publish
 4). Включаем слушатель - открываем новое окно в терминале
 cd nats-test/
@@ -333,14 +359,23 @@ rs
     который позволит проверять почему некоторые сообщения не приходят или опаздывают
 8222 - это порт который мы указываем в настройках сервиса для мониторинга nats
 kubectl get pods - ищем имя пода для nats
-kubectl port-forward nats-depl-57bcc6f4bc-wj7tc 8222:8222
+kubectl port-forward nats-depl-79486c67b9-69b4q 8222:8222
 Теперь мы можем через браузер подключиться для просмотра таблиц мониторинга nats
 http://localhost:8222/streaming
 http://localhost:8222/streaming/channelsz?subs=1
+
+7). Можно открыть несколько слушателей и проверять чтобы только один из низ получал сообщение
+
 
 /**===============================================================================================================**/
 
 Если при разработки мы создаём новый depl или srv то нужно убедиться что они запущены
 kubectl get pods
+
+/**===============================================================================================================**/
+
+Чтобы перейте непосредственно в браузер вводим эту команду
+Только нужно чтобы minikube был запущен
+minikube dashboard
 
 /**===============================================================================================================**/

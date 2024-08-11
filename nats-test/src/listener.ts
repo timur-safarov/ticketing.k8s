@@ -16,12 +16,18 @@ stan.on('connect', () => {
     process.exit();
   });
 
-  // Все настройки subscription можно посмотреть в мониторинге тут - http://localhost:8222/streaming/channelsz?subs=1
-  const options = stan.subscriptionOptions().setManualAckMode(true);
+  const options = stan
+        .subscriptionOptions()
+        .setManualAckMode(true)
+        .setDeliverAllAvailable()
+        .setDurableName('accounting-service');
 
+  // Все настройки subscription можно посмотреть в мониторинге тут - http://localhost:8222/streaming/channelsz?subs=1
   const subscription = stan.subscribe(
     'ticket:created',
-    'orders-service-queue-group', // Этот параметр нужен чтобы не передавались одинаковые сообщения в слушатели - он может быть любым
+    'queue-group-name',
+    // Этот параметр нужен чтобы не передавались одинаковые сообщения в слушатели - он может быть любым
+    // если параметр queue-group-name отключен то при команде rs все сообщения будут передаваться повторно
     options
   );
 
