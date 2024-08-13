@@ -1,5 +1,6 @@
-import nats, { Message } from 'node-nats-streaming';
+import nats from 'node-nats-streaming';
 import { randomBytes } from 'crypto';
+import { TicketCreatedListener } from './events/ticket-created-listener';
 
 console.clear();
 
@@ -16,32 +17,36 @@ stan.on('connect', () => {
     process.exit();
   });
 
-  const options = stan
-        .subscriptionOptions()
-        .setManualAckMode(true)
-        .setDeliverAllAvailable()
-        .setDurableName('accounting-service');
+  new TicketCreatedListener(stan).listen();
 
-  // Все настройки subscription можно посмотреть в мониторинге тут - http://localhost:8222/streaming/channelsz?subs=1
-  const subscription = stan.subscribe(
-    'ticket:created',
-    'queue-group-name',
-    // Этот параметр нужен чтобы не передавались одинаковые сообщения в слушатели - он может быть любым
-    // если параметр queue-group-name отключен то при команде rs все сообщения будут передаваться повторно
-    options
-  );
+  // Код ниже был удалён в блоке 15 - урок 3. Extending the Listener
+  // const options = stan
+  //       .subscriptionOptions()
+  //       .setManualAckMode(true)
+  //       .setDeliverAllAvailable()
+  //       .setDurableName('accounting-service');
 
-  subscription.on('message', (msg: Message) => {
-    const data = msg.getData();
+  // // Все настройки subscription можно посмотреть в мониторинге тут - http://localhost:8222/streaming/channelsz?subs=1
+  // const subscription = stan.subscribe(
+  //   'ticket:created',
+  //   'queue-group-name',
+  //   // Этот параметр нужен чтобы не передавались одинаковые сообщения в слушатели - он может быть любым
+  //   // если параметр queue-group-name отключен то при команде rs все сообщения будут передаваться повторно
+  //   options
+  // );
 
-    if (typeof data === 'string') {
-      console.log(`Received event #${msg.getSequence()}, with data: ${data}`);
-    }
+  // subscription.on('message', (msg: Message) => {
+  //   const data = msg.getData();
 
-    // Останавливаем передачу сообщения так как оно получено
-    msg.ack();
+  //   if (typeof data === 'string') {
+  //     console.log(`Received event #${msg.getSequence()}, with data: ${data}`);
+  //   }
 
-  });
+  //   // Останавливаем передачу сообщения так как оно получено
+  //   msg.ack();
+
+  // });
+
 });
 
 process.on('SIGINT', () => stan.close());
